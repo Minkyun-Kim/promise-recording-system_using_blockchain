@@ -1,4 +1,4 @@
-package com.blockchain.web.controller;
+package com.blockchain.view;
 
 import java.text.DateFormat;
 import java.util.Date;
@@ -7,26 +7,25 @@ import java.util.Locale;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.Controller;
 
 /**
  * Handles requests for the application home page.
  */
-public class HomeController implements Controller{
+@Controller
+public class HomeController{
 	
 	
 	/**
 	 * Simply selects the home view to render by returning its name.
 	 */
-	public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) {
-		
-		
-		
-		ModelAndView mav = new ModelAndView();
-		mav.setViewName("home");
-		
-		return mav;
+	@RequestMapping(value="/")
+	public String showHome() {
+		System.out.println("showHome() called");
+		return "home";
 	}
+	
 	
 }

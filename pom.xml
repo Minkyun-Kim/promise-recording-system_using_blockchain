@@ -33,6 +33,21 @@
 			<version>${org.springframework-version}</version>
 		</dependency>
 				
+		<dependency>
+    		<groupId>com.h2database</groupId>
+    		<artifactId>h2</artifactId>
+    		<version>1.4.199</version>
+		</dependency>	
+				
+			<!-- https://mvnrepository.com/artifact/org.projectlombok/lombok -->
+		<dependency>
+   			<groupId>org.projectlombok</groupId>
+   			<artifactId>lombok</artifactId>
+   			<version>1.16.20</version>
+   			<scope>provided</scope>
+		</dependency>
+		
+		
 		<!-- AspectJ -->
 		<dependency>
 			<groupId>org.aspectj</groupId>

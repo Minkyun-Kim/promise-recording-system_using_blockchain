@@ -36,7 +36,7 @@ public class HomeController{
 	@RequestMapping(value="/makePromise", method=RequestMethod.POST)
 	public String makePromise(PromiseVO vo) {
 		promiseService.insertPromise(vo);
-		return "showBlockchain";
+		return "home";
 		
 	}
 	

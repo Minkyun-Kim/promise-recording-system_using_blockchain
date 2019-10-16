@@ -1,5 +1,7 @@
 package com.blockchain.biz;
 
+import java.util.List;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -7,8 +9,8 @@ import lombok.Setter;
 @Getter
 public class BlockVO {
 	private int height;
-	private final int transactionCount = 4;
-	private String[] transactions;
+	final static int transactionCount = 4;
+	private List<PromiseVO> transactions;
 
 	@Override
 	public String toString() {
@@ -16,4 +18,5 @@ public class BlockVO {
 						+ ", transactionCount: " + transactionCount
 						+ ", transactions: {" + transactions + "}]";
 	}
+
 }

@@ -11,7 +11,7 @@ public class BlockHeaderVO {
 	private String prevBlockHash;
 	private String merkleRoot;
 	private long timeStamp;
-	private String nonce;
+	private int nonce;
 	
 	@Override
 	public String toString() {

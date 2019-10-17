@@ -10,24 +10,24 @@ import java.util.List;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class PromiseDAO {
+public class TransactionQueueDAO {
 	
 	private Connection conn=null;
 	private PreparedStatement stmt=null;
 	private ResultSet rs = null;
 	
-	private final String PROMISE_INSERT="insert into "
-			+ "PROMISE(SEQ, DATE, LOCATION, FUND, PARTICIPANTS, CONTENT) "
-			+ "values((select nvl(max(seq), 0)+1 from PROMISE), ?,?,?,?,?)";
-	private final String PROMISE_GET_COUNT="select count(*) from PROMISE";
-	private final String PROMISE_DELETE="delete from PROMISE";
-	private final String PROMISE_GET_ALL="select * from PROMISE";
+	private final String TXQUEUE_INSERT="insert into "
+			+ "TXQUEUE(SEQ, DATE, LOCATION, FUND, PARTICIPANTS, CONTENT) "
+			+ "values((select nvl(max(seq), 0)+1 from TXQUEUE), ?,?,?,?,?)";
+	private final String TXQUEUE_GET_COUNT="select count(*) from TXQUEUE";
+	private final String TXQUEUE_DELETE="delete from TXQUEUE";
+	private final String TXQUEUE_GET_ALL="select * from TXQUEUE";
 	
-	public void insertPromise(PromiseVO vo) {
-		System.out.println("===> Process insertPromise() using JDBC");
+	public void insertTransaction(PromiseVO vo) {
+		System.out.println("===> Process insertTransaction() using JDBC");
 		try {
 			conn = JDBCUtil.getConnection();
-			stmt = conn.prepareStatement(PROMISE_INSERT);
+			stmt = conn.prepareStatement(TXQUEUE_INSERT);
 			stmt.setString(1,  vo.getDate());
 			stmt.setString(2,  vo.getLocation());
 			stmt.setDouble(3,  vo.getFund());
@@ -41,31 +41,31 @@ public class PromiseDAO {
 		}
 	}
 
-	public int getPromiseCnt() {
+	public int getTransactionCnt() {
 		// TODO Auto-generated method stub
-		System.out.println("===> Process getPromiseCnt() using JDBC");
+		System.out.println("===> Process getTransactionCnt() using JDBC");
 
-		int promiseCnt = 0;
+		int transactionCnt = 0;
 		try {
 			conn = JDBCUtil.getConnection();
-			stmt=conn.prepareStatement(PROMISE_GET_COUNT);
+			stmt=conn.prepareStatement(TXQUEUE_GET_COUNT);
 			rs = stmt.executeQuery();
 			if(rs.next()) {
-				promiseCnt =  rs.getInt(1);
+				transactionCnt =  rs.getInt(1);
 			}
 		}catch(SQLException e) {
 			e.printStackTrace();
 		}finally {
 			JDBCUtil.close(stmt, conn);
 		}
-		return promiseCnt;
+		return transactionCnt;
 	}
 
-	public void deletePromises() {
-		System.out.println("===> Process deletePromises() using JDBC");
+	public void deleteTransactions() {
+		System.out.println("===> Process deleteTransactions() using JDBC");
 		try {
 			conn = JDBCUtil.getConnection();
-			stmt = conn.prepareStatement(PROMISE_DELETE);
+			stmt = conn.prepareStatement(TXQUEUE_DELETE);
 			stmt.executeUpdate();
 		}catch(SQLException e) {
 			e.printStackTrace();
@@ -74,12 +74,12 @@ public class PromiseDAO {
 		}
 	}
 
-	public List<PromiseVO> getAllPromises() {
+	public List<PromiseVO> getTransactionList() {
 		System.out.println("===> Process getAllPromises() using JDBC");
-		List<PromiseVO> promiseCollection = new ArrayList<PromiseVO>();
+		List<PromiseVO> transactionList = new ArrayList<PromiseVO>();
 		try {
 			conn = JDBCUtil.getConnection();
-			stmt = conn.prepareStatement(PROMISE_GET_ALL);
+			stmt = conn.prepareStatement(TXQUEUE_GET_ALL);
 			rs = stmt.executeQuery();
 			while(rs.next()) {
 				PromiseVO promiseVO = new PromiseVO();
@@ -88,15 +88,14 @@ public class PromiseDAO {
 				promiseVO.setFund(rs.getDouble("fund"));
 				promiseVO.setParticipants(rs.getString("participants"));
 				promiseVO.setContent(rs.getString("content"));
-				promiseCollection.add(promiseVO);
+				transactionList.add(promiseVO);
 			}
 		}catch(SQLException e) {
 			e.printStackTrace();
 		}finally {
 			JDBCUtil.close(rs, stmt, conn);
 		}
-
-		return promiseCollection;
+		return transactionList;
 	}
 
 }

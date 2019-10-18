@@ -16,8 +16,11 @@ public class BlockChainDAO {
 	private Connection conn = null;
 	private PreparedStatement stmt=null;
 	private PreparedStatement stmt2=null;
+	private PreparedStatement stmt3=null;
 	private ResultSet rs = null;
 	private ResultSet rs2 = null;
+	private ResultSet rs3 = null;
+	private String[] tx = {"tx1", "tx2", "tx3", "tx4"};
 	
 	@Autowired
 	private TransactionQueueDAO promiseDAO;
@@ -25,6 +28,7 @@ public class BlockChainDAO {
 	private final String BLOCK_INSERT="insert into BLOCK(height, txCount, tx1, tx2, tx3, tx4)"
 										+ "values((select nvl(max(height), 0)+1 from BLOCK), ?,?,?,?,?) ";
 	private final String BLOCK_GET_ALL = "select * from block";
+	private final String BLOCK_GET_BY_HEIGHT="select * from block where height = ?";
 	private final String BLOCKHEADER_GET_PREV_BLOCKHEADER = "select * from BLOCKHEADER where height=(select max(height) from BLOCKHEADER)";
 	private final String BLOCKHEADER_INSERT="insert into BLOCKHEADER(height, prevBlockHash, merkleRoot, timestamp, nonce)"
 											+ "values((select nvl(max(height), 0)+1 from BLOCKHEADER), ?,?,?,?)";
@@ -207,6 +211,70 @@ public class BlockChainDAO {
 			JDBCUtil.close(rs2,  stmt2, null);
 		}
 		return promiseList;
+	}
+
+	public List<BlockChainVO> getBlockChainList() {
+		System.out.println("===> Process getBlockChainList() using JDBC");
+		List<BlockChainVO> blockChainList = new ArrayList<>();
+		try {
+			conn = JDBCUtil.getConnection();
+			stmt = conn.prepareStatement(BLOCKHEADER_GET_ALL);
+			rs = stmt.executeQuery();
+			while(rs.next()) {
+				BlockChainVO blockChain = new BlockChainVO();
+				BlockHeaderVO blockHeader = new BlockHeaderVO();
+				blockHeader.setHeight(rs.getInt("height"));
+				blockHeader.setPrevBlockHash(rs.getString("prevBlockHash"));
+				blockHeader.setMerkleRoot(rs.getString("merkleRoot"));
+				blockHeader.setTimeStamp(rs.getLong("timestamp"));
+				blockHeader.setNonce(rs.getInt("nonce"));
+
+				blockChain.setBlockHeader(blockHeader);
+				blockChain.setBlockHeaderHash(Util.getObjectHash(blockHeader));
+				
+				stmt2 = conn.prepareStatement(BLOCK_GET_BY_HEIGHT);
+				stmt2.setInt(1, rs.getInt("height"));
+				rs2 = stmt2.executeQuery();
+				if(rs2.next()) {
+					BlockVO block = new BlockVO();
+					block.setHeight(rs2.getInt("height"));
+					List<PromiseVO> promiseList = new ArrayList<>();
+					for(int i = 0; i < BlockVO.transactionCount; i++) {
+						stmt3 = conn.prepareStatement(PROMISE_GET_BY_SEQ);
+						stmt3.setInt(1, rs2.getInt(tx[i]));
+						rs3 = stmt3.executeQuery();
+						if(rs3.next()) {
+							PromiseVO promise = new PromiseVO();
+							promise.setDate(rs3.getString("date"));
+							promise.setLocation(rs3.getString("location"));
+							promise.setFund(rs3.getDouble("fund"));
+							promise.setParticipants(rs3.getString("participants"));
+							promise.setContent(rs3.getString("content"));
+							promiseList.add(promise);
+
+						}
+						else {
+							System.err.println("can not find promise");
+						}
+					}
+					block.setTransactions(promiseList);
+					blockChain.setBlock(block);
+					blockChainList.add(blockChain);
+				}
+				else {
+					System.err.println("Can not find Block");
+				}
+			}
+		}catch(SQLException e) {
+			e.printStackTrace();
+		}finally {
+			JDBCUtil.close(rs3, stmt3, null);
+			JDBCUtil.close(rs2, stmt2, null);
+			JDBCUtil.close(rs,  stmt, conn);
+		}
+		
+		
+		return blockChainList;
 	}
 
 }

@@ -1,6 +1,7 @@
 package com.blockchain.view;
 
 import java.text.DateFormat;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -17,6 +18,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.blockchain.biz.BlockChainDAO;
 import com.blockchain.biz.BlockChainService;
+import com.blockchain.biz.BlockChainVO;
 import com.blockchain.biz.BlockHeaderVO;
 import com.blockchain.biz.BlockVO;
 import com.blockchain.biz.TransactionQueueDAO;
@@ -44,32 +46,18 @@ public class HomeController{
 	@RequestMapping(value="/makePromise", method=RequestMethod.POST)
 	public String makePromise(PromiseVO vo) {
 		promiseService.insertTransaction(vo);
-		return "home";
-//		return "redirect:/showBlockChain";
+		return "redirect:showBlockChain";
 		
 	}
 	@RequestMapping(value="/showBlockChain", method=RequestMethod.GET)
 	public String showBlockChain(Model model) {
-		
-		model.addAttribute("blockList", blockChainService.getBlockList());
-		model.addAttribute("blockHeaderList", blockChainService.getBlockHeaderList());
+
+		List<BlockChainVO> blockChainList = blockChainService.getBlockChainList();
+		Collections.reverse(blockChainList);
+		model.addAttribute("blockChainList", blockChainList);
+
 		model.addAttribute("txQueueList", promiseService.getTransactionList());
 
-		List<BlockVO> blockList = blockChainService.getBlockList();
-		List<BlockHeaderVO> blockHeaderList = blockChainService.getBlockHeaderList();
-		List<PromiseVO> promiseList = promiseService.getTransactionList();
-		for(BlockVO blockVO: blockList) {
-			System.out.println(blockVO);
-		}
-		for(BlockHeaderVO blockHeaderVO: blockHeaderList) {
-			System.out.println(blockHeaderVO);
-		}
-		for(PromiseVO promiseVO : promiseList) {
-			System.out.println(promiseVO);
-		}
-
 		return "showBlockChain";
-		
 	}
-	
 }

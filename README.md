@@ -20,16 +20,14 @@
 
 ## Prerequisites
 
-Java 8
-Spring3 - mvc
-Apache Tomcat v9.0
-H2 database v1.4.199
-Eclipse
-Spring Tools Suite(STS)
-Maven
-Lombok
-
-## Demo
+Java 8   
+Spring3 - mvc   
+Apache Tomcat v9.0   
+H2 database v1.4.199   
+Eclipse   
+Spring Tools Suite(STS)   
+Maven   
+Lombok   
 
 
 ## Release

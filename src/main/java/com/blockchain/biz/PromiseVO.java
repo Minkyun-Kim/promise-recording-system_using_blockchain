@@ -25,6 +25,13 @@ public class PromiseVO {
 		return print;
 	}
 	
+	public boolean isInsufficientValues() {
+		if(date == null || location == null || fund == null || participants== null || content == null) {
+			return true;
+		}
+		return false;
+	}
+	
 	
 
 }

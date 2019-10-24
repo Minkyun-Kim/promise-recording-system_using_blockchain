@@ -7,6 +7,7 @@
     <title>promise management</title>
     <!--  link href="<c:url value="/resources/style/home.css"/>" rel="stylesheet" type="text/css" /-->
     <link href="/resources/style/home.css" rel="stylesheet" type="text/css" />
+    <script src="/resources/js/home.js" type="text/javascript"></script>
 </head>
 
 <body>
@@ -25,7 +26,7 @@
     </section>
     <section id="makepromise">
         <fieldset>
-            <form action="/makePromise" method="post">
+            <form name="promise" action="/makePromise" method="post" onsubmit="isEmpty()">
             <div id="tablename">Creat Promise</div>
             <ul>
                 <div class="input-box">

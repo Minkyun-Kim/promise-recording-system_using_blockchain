@@ -45,8 +45,11 @@ public class HomeController{
 	
 	@RequestMapping(value="/makePromise", method=RequestMethod.POST)
 	public String makePromise(PromiseVO vo) {
-		promiseService.insertTransaction(vo);
-		return "redirect:showBlockChain";
+		if(!vo.isInsufficientValues()) {
+			promiseService.insertTransaction(vo);
+			return "redirect:showBlockChain";
+		}
+		return "home";
 		
 	}
 	@RequestMapping(value="/showBlockChain", method=RequestMethod.GET)
